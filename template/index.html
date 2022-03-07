@@ -1,0 +1,215 @@
+<!DOCTYPE HTML><html>
+<head>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+  
+  <link href="https://res.cloudinary.com/dlrdyoxfv/raw/upload/v1646481980/HTN.min_kymfso.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"></script>
+  <title>Demo gi&#7919;a k&#7923;</title>
+</head>
+<body>
+
+  <h1>Demo b&aacute;o c&aacute;o gi&#7919;a k&#7923;</h1>
+
+  <img width="300px"src="https://i.ibb.co/4jV8PFm/iot.png" alt="a">
+  
+  <div class="flex-control">
+    <div>
+      <strong>Led 1</strong>
+      <div class="led-control">
+        <div class="inline">
+        
+          <label class="slider0">Ngu&#7891;n</label>
+          <label class="switch" style="margin-right:55px">
+            <input id= "led1P" type="checkbox" onchange="power(true)" %phPowerChecked1%>
+            <span class="slider2"></span>
+          </label>
+      
+          <label  class="slider0">Nh&#7845;p nh&aacute;y</label>
+          <label class="switch">
+            <input id= "led1B" type="checkbox" onchange="blink(true)">
+            <span class="slider2"></span>
+          </label>
+        </div>
+        
+        
+        <div class="inline">
+          <span><img src = "https://i.ibb.co/G9b8Sd1/2985062.png" width = "30px"></span>
+          <input type="range" onchange="updateSliderPWM(this,true)" id="pwmSlider1" min="0" max="100" step="1" class="slider" value=%phBrightness1%>
+          <span class = "textSliderValue" id="textSliderValue1">%phBrightness1%</span> &#37
+        </div>
+      
+      
+        <div class="inline">
+          <button class="btn btn-info" onclick="sendRGB(true)" id="change_color" role="button"
+            >&#272;&#7893;i m&agrave;u</button
+          >
+          <input style = "background-color: '#%phRGB1%';" value=%phRGB1% class="form-control jscolor" id="rgb1" readonly/>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div>
+      <strong>Led 2</strong>
+      <div class="led-control">
+        <div class="inline">
+      
+          <label class="slider0">Ngu&#7891;n</label>
+          <label class="switch" style="margin-right:55px">
+            <input id = "led2P"type="checkbox" onchange="power(false)" %phPowerChecked2%>
+            <span class="slider2"></span>
+          </label>
+      
+          <label  class="slider0">Nh&#7845;p nh&aacute;y</label>
+          <label class="switch">
+            <input id = "led2B" type="checkbox" onchange="blink(false)">
+            <span class="slider2"></span>
+          </label>
+        </div>
+        
+        
+        <div class="inline">
+          <span><img src = "https://i.ibb.co/G9b8Sd1/2985062.png" width = "30px"></span>
+          <input type="range" onchange="updateSliderPWM(this,false)" id="pwmSlider2" min="0" max="100" step="1" class="slider" value=%phBrightness2%>
+          <span class = "textSliderValue" id="textSliderValue2">%phBrightness2%</span> &#37
+        </div>
+      
+      
+        <div class="inline">
+          <button class="btn btn-info" onclick="sendRGB(false)" id="change_color" role="button"
+            >&#272;&#7893;i m&agrave;u</button
+          >
+          <input  style = "background-color: '#%phRGB2%';" value=%phRGB2% class="form-control jscolor" id="rgb2" readonly />
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+ 
+<script>
+
+  var pow1On = "/power1?value=true";
+  var pow1Off = "/power1?value=false";
+  var blink1On = "/blink1?value=true";
+  var blink1Off = "/blink1?value=false";
+
+  var pow2On = "/power2?value=true";
+  var pow2Off = "/power2?value=false";
+  var blink2On = "/blink2?value=true";
+  var blink2Off = "/blink2?value=false";
+
+
+  function sendRequest(request) {
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.open("GET", request, true);
+    httpRequest.send();
+    console.log(request);
+  }
+  
+  function updateSliderPWM(element, led1) {
+    var pwmSliderValue;
+    var pmwSliderId;
+    var textSliderValue;
+    var sliderRequest;
+    if (led1) {
+      pmwSliderId = "pwmSlider1";
+      textSliderValue = "textSliderValue1";
+      sliderRequest = "/brightness1?value=";
+    } else {
+      pmwSliderId = "pwmSlider2";
+      textSliderValue = "textSliderValue2";
+      sliderRequest = "/brightness2?value=";
+    }
+  
+    pwmSliderValue = document.getElementById(pmwSliderId).value;
+    document.getElementById(textSliderValue).innerHTML = pwmSliderValue;
+  
+    sendRequest(sliderRequest + pwmSliderValue);
+  }
+  
+  function sendRGB(led1) {
+    var rgbRequest;
+    var rgbObj;
+    var hexV;
+    if (led1) {
+      rgbRequest = "/rgb1?value=";
+      hexV = document.getElementById("rgb1").value;
+      rgbObj = hexToRGB(hexV);
+    } else {
+      rgbRequest = "/rgb2?value=";
+      hexV = document.getElementById("rgb2").value;
+      rgbObj = hexToRGB(hexV);
+    }
+    var rgbString = "r" + rgbObj.red + "g" + rgbObj.green + "b" + rgbObj.blue;
+    var hexString = "&hex=" + hexV;
+    sendRequest(rgbRequest + rgbString + hexString);
+  }
+  
+  
+  function power(led1) {
+    var powerOn;
+    if(led1){
+      powerOn = document.getElementById("led1P").checked;
+      if(powerOn){
+        sendRequest(pow1On);
+      }
+      else{
+        sendRequest(pow1Off);
+      }
+    }
+    else{
+      powerOn = document.getElementById("led2P").checked;
+      if(powerOn){
+        sendRequest(pow2On);
+      }
+      else{
+        sendRequest(pow2Off);
+      }
+    }
+
+  
+    if (powerOn && led1 && document.getElementById("led1B").checked) {
+      sendRequest(blink1On);
+    }else if(powerOn && !led1 && document.getElementById("led2B").checked){
+      sendRequest(blink2On);
+    }
+  }
+  
+  function blink(led1) {
+    if(led1){
+      if(document.getElementById("led1B").checked){
+        sendRequest(blink1On);
+      }
+      else{
+        sendRequest(blink1Off);
+      }
+    }
+    else{
+      if(document.getElementById("led2B").checked){
+        sendRequest(blink2On);
+      }
+      else{
+        sendRequest(blink2Off);
+      }
+    }
+  }
+
+  function hexToRGB(hexColor){
+  hexColor = parseInt(hexColor,16);
+  return {
+    red: (hexColor >> 16) & 0xFF,
+    green: (hexColor >> 8) & 0xFF,  
+    blue: hexColor & 0xFF,
+  }
+}
+  </script>
+</body>
+</html>
+
+
