@@ -1,14 +1,3 @@
-
-/** Simple On-board LED flashing program - written by Derek Molloy
-    for the ee402 module
-
-    This program uses USR LED 0 and can be executed in three ways:
-         makeLED on
-         makeLED off
-         makeLED flash  (flash at 100ms intervals - on 50ms/off 50ms)
-         makeLED status (get the trigger status)
-*/
-
 #include<iostream>
 #include<fstream>
 #include<string>
